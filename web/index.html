@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Ajedrez para compartir en tu red local.">
+  <title>Nexo Chess · Ajedrez en tu red</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232c675b'/%3E%3Cpath d='M21 13h22v12H31v13H21zm10 25h12v13H21V38' fill='%23f3f0e5'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/pieces.js" defer></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="Nexo Chess, inicio" id="brand-home">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 5h18v8H16v9H7zm9 17h9v6H7v-6" fill="currentColor"/></svg></span>
+        <span>Nexo<span class="brand-light"> Chess</span><small>AJEDREZ EN TU RED</small></span>
+      </a>
+      <div class="header-tools">
+        <span class="connection" id="connection"><span class="status-dot"></span><span id="connection-label">Conectando</span></span>
+        <button class="icon-button theme-button" id="theme-toggle" type="button" aria-label="Cambiar al tema oscuro" title="Cambiar tema">
+          <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.5A8.8 8.8 0 0 1 8.5 4a8.5 8.5 0 1 0 11.5 11.5Z"/></svg>
+          <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div id="notice" class="notice" role="status" hidden><span id="notice-text"></span><button id="notice-close" type="button" aria-label="Cerrar aviso">×</button></div>
+
+    <main>
+      <section id="lobby-view" class="lobby-view" aria-label="Inicio">
+        <div class="lobby-grid">
+          <div class="lobby-intro">
+            <span class="eyebrow"><span class="tiny-diamond"></span> UNA CONEXIÓN. INFINITAS PARTIDAS.</span>
+            <h1>Tu siguiente<br>gran <em>jugada.</em></h1>
+            <p>Crea una sala, invita a alguien de tu misma red y deja que el tablero haga el resto.</p>
+            <div class="intro-foot"><span class="intro-line"></span><span>Sin reloj.<br>Con todo el tiempo para pensar.</span></div>
+            <div class="hero-art" aria-hidden="true"><div class="hero-art-square"></div><div id="hero-piece" class="hero-piece"></div><span class="hero-art-dot"></span></div>
+          </div>
+
+          <section class="play-card card" aria-labelledby="play-heading">
+            <div class="card-heading"><span class="eyebrow">EL PRIMER MOVIMIENTO</span><h2 id="play-heading">Vamos a jugar.</h2></div>
+            <label class="field-label" for="player-name">Tu nombre</label>
+            <input id="player-name" class="text-input" maxlength="32" autocomplete="off" placeholder="¿Cómo te llamas?" spellcheck="false">
+            <div class="tabs" role="tablist" aria-label="Entrar en una partida">
+              <button id="tab-create" class="tab active" type="button" role="tab" aria-selected="true" aria-controls="create-form">Crear sala</button>
+              <button id="tab-join" class="tab" type="button" role="tab" aria-selected="false" aria-controls="join-form">Tengo un código</button>
+            </div>
+            <form id="create-form" role="tabpanel" aria-labelledby="tab-create">
+              <label class="field-label" for="room-name">Nombre de la sala <span class="optional">opcional</span></label>
+              <input id="room-name" class="text-input" maxlength="32" autocomplete="off" placeholder="Una partida entre amigos">
+              <fieldset class="color-fieldset"><legend>Elige tus piezas</legend><div class="color-options two">
+                <label class="color-option"><input type="radio" name="create-color" value="w" checked><span class="side-token white-token" aria-hidden="true"></span><span>Blancas<small>Mueves primero</small></span></label>
+                <label class="color-option"><input type="radio" name="create-color" value="b"><span class="side-token black-token" aria-hidden="true"></span><span>Negras<small>Responde y sorprende</small></span></label>
+              </div></fieldset>
+              <button id="create-submit" class="button primary full" type="submit">Crear partida <span aria-hidden="true">↗</span></button>
+            </form>
+            <form id="join-form" role="tabpanel" aria-labelledby="tab-join" hidden>
+              <label class="field-label" for="room-code">Código de la sala</label>
+              <input id="room-code" class="text-input code-input" maxlength="16" autocomplete="off" placeholder="ABC123" spellcheck="false">
+              <fieldset class="color-fieldset"><legend>¿Cómo quieres entrar?</legend><div class="color-options three">
+                <label class="color-option compact"><input type="radio" name="join-color" value="w" checked><span class="side-token white-token" aria-hidden="true"></span><span>Blancas</span></label>
+                <label class="color-option compact"><input type="radio" name="join-color" value="b"><span class="side-token black-token" aria-hidden="true"></span><span>Negras</span></label>
+                <label class="color-option compact"><input type="radio" name="join-color" value="spectator"><svg class="small-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3-6 10-6 10 6 10 6-3 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="3"/></svg><span>Espectador</span></label>
+              </div></fieldset>
+              <button id="join-submit" class="button primary full" type="submit">Entrar en la sala <span aria-hidden="true">↗</span></button>
+            </form>
+            <p class="card-footnote"><span class="mini-link" aria-hidden="true">⌁</span> La partida se queda en vuestra red.</p>
+          </section>
+        </div>
+
+        <section class="rooms-section" aria-labelledby="rooms-heading">
+          <div class="section-heading"><div><span class="eyebrow">EN ESTE MOMENTO</span><h2 id="rooms-heading">Salas de tu red <span id="room-count" class="count-badge">0</span></h2></div><span class="quiet-label">Actualización en directo <span class="status-dot"></span></span></div>
+          <div id="rooms-list" class="rooms-list"><div class="empty-rooms"><span class="empty-icon" aria-hidden="true">＋</span><div><strong>El tablero está listo.</strong><p>Crea la primera sala y reúne a tu rival.</p></div></div></div>
+        </section>
+      </section>
+
+      <section id="game-view" class="game-view" aria-label="Partida" hidden>
+        <div class="game-topline"><button id="leave-room" class="text-button" type="button"><span aria-hidden="true">←</span> Salir de la sala</button><div class="room-title"><span id="game-room-name">Partida</span><span class="room-code-badge" id="game-room-code"></span></div><span class="role-badge" id="role-badge">Espectador</span></div>
+        <div class="game-grid">
+          <section class="board-column" aria-label="Tablero y jugadores">
+            <div id="player-top" class="player-card"></div>
+            <div class="board-frame"><div id="board" class="board" role="grid" aria-label="Tablero de ajedrez" aria-describedby="board-instructions"></div></div>
+            <div id="player-bottom" class="player-card"></div>
+            <div class="board-toolbar"><p id="board-instructions">Selecciona una pieza para ver sus movimientos.</p><button id="flip-board" class="text-button" type="button" aria-label="Girar el tablero"><svg class="small-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h13l-3-3m6 11H7l3 3M4 8v5m16 3v-5"/></svg> Girar</button></div>
+          </section>
+
+          <aside class="game-sidebar" aria-label="Información de la partida">
+            <section class="game-card card">
+              <div class="game-status-head"><span class="eyebrow" id="game-phase">PARTIDA EN CURSO</span><h2 id="game-status" aria-live="polite">Turno de las blancas</h2><p id="game-substatus">Disfruta de la partida.</p></div>
+              <div id="pending-panel" class="pending-panel" hidden><p id="pending-text"></p><div id="pending-actions" class="pending-actions"><button id="accept-proposal" class="button primary small" type="button">Aceptar</button><button id="reject-proposal" class="button secondary small" type="button">Rechazar</button></div></div>
+              <div class="history-heading"><h3>Movimientos</h3><span id="move-counter">0 jugadas</span></div>
+              <div class="history-table-head" aria-hidden="true"><span>#</span><span>Blancas</span><span>Negras</span></div>
+              <div id="history-list" class="history-list" role="group" aria-label="Historial de movimientos"><p class="history-empty">Cada buena partida empieza<br>con una primera jugada.</p></div>
+              <div class="history-controls" role="group" aria-label="Revisar la partida">
+                <button id="history-start" class="icon-button" type="button" aria-label="Ver posición inicial" title="Posición inicial"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5v14m13-13-7 6 7 6Z"/></svg></button>
+                <button id="history-back" class="icon-button" type="button" aria-label="Movimiento anterior" title="Movimiento anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-7 6 7 6"/></svg></button>
+                <button id="history-forward" class="icon-button" type="button" aria-label="Movimiento siguiente" title="Movimiento siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 7 6-7 6"/></svg></button>
+                <button id="history-live" class="live-button" type="button"><span class="status-dot"></span> En directo</button>
+              </div>
+              <div id="review-note" class="review-note" hidden>Revisando la partida. Vuelve al directo para jugar.</div>
+              <div id="player-actions" class="player-actions" role="group" aria-label="Acciones de partida">
+                <button id="undo-action" class="button secondary small" type="button">Deshacer</button><button id="draw-action" class="button secondary small" type="button">Ofrecer tablas</button>
+                <button id="restart-action" class="button secondary small" type="button">Reiniciar</button><button id="resign-action" class="button secondary small danger-text" type="button">Abandonar</button>
+                <button id="claim-action" class="button secondary small full" type="button" hidden>Reclamar tablas</button>
+              </div>
+              <button id="download-pgn" class="download-button" type="button"><svg class="small-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v5h14v-5"/></svg> Descargar partida PGN</button>
+            </section>
+            <section class="invite-card card" aria-labelledby="invite-heading"><div class="invite-top"><span class="eyebrow">COMPARTE EL TABLERO</span><span class="mini-link" aria-hidden="true">⌁</span></div><h3 id="invite-heading">Un sitio para tu rival.</h3><p>Abre este enlace desde la misma red.</p><div class="copy-field"><input id="share-link" class="text-input" readonly aria-label="Enlace de invitación"><button id="copy-invite" class="icon-button" type="button" aria-label="Copiar enlace de invitación" title="Copiar enlace"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V3H3v13h5"/></svg></button></div></section>
+          </aside>
+        </div>
+      </section>
+
+      <section class="network-section" aria-labelledby="network-heading"><div class="network-heading"><svg class="small-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v5M5 17v-5h14v5"/></svg><div><h3 id="network-heading">Conecta a tu gente</h3><p>En otro dispositivo de esta red, abre una de estas direcciones.</p></div></div><div id="network-urls" class="network-urls"><span class="quiet-label">Buscando direcciones de la red…</span></div></section>
+    </main>
+    <footer class="site-footer"><span><strong>Nexo Chess</strong><span class="footer-divider">/</span> El placer de una buena partida.</span><div><span id="app-version" class="version-label"></span><button id="shutdown" class="text-button danger-text" type="button" hidden>Cerrar Nexo</button></div></footer>
+  </div>
+
+  <dialog id="promotion-dialog" class="modal" aria-labelledby="promotion-title"><div class="modal-body"><span class="eyebrow">UN PEÓN. CUATRO POSIBILIDADES.</span><h2 id="promotion-title">Elige tu nueva pieza.</h2><p>La coronación completa tu movimiento.</p><div id="promotion-choices" class="promotion-choices"></div><button id="promotion-cancel" class="button secondary full" type="button">Volver al tablero</button></div></dialog>
+  <dialog id="confirm-dialog" class="modal" aria-labelledby="confirm-title"><div class="modal-body"><span class="eyebrow" id="confirm-eyebrow">TU PARTIDA</span><h2 id="confirm-title"></h2><p id="confirm-description"></p><div class="modal-actions"><button id="confirm-cancel" class="button secondary" type="button">Cancelar</button><button id="confirm-accept" class="button primary" type="button">Confirmar</button></div></div></dialog>
+  <span id="screen-reader-status" class="sr-only" role="status" aria-live="polite"></span>
+  <noscript><p class="notice">Nexo Chess necesita JavaScript para mostrar el tablero y conectar la partida. Actívalo en este navegador.</p></noscript>
+</body>
+</html>
